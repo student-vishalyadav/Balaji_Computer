@@ -6,15 +6,13 @@ services:
     name: balaji-computer-backend
     runtime: node
     rootDir: server
-    buildCommand: npm install
+    buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
       - key: ALLOW_OFFLINE_DEMO
         value: "false"
       - key: MONGO_URI

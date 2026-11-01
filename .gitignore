@@ -26,10 +26,13 @@ web_modules/
 client/.env
 client/.env.*
 !client/.env.example
+!client/.env.*.example
+!client/.env.production.example
 
 server/.env
 server/.env.*
 !server/.env.example
+!server/.env.*.example
 
 # Security Credentials, Keys, and Certificates
 *.pem
