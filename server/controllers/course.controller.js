@@ -275,6 +275,8 @@ const getAllCourses = async (req, res) => {
             }
         }
 
+        const isDbOnline = mongoose.connection.readyState === 1;
+
         // Fallback to default courses if DB is empty, loading, or offline
         if (!courses || courses.length === 0) {
             courses = DEFAULT_COURSES.filter((c) => {
@@ -283,12 +285,20 @@ const getAllCourses = async (req, res) => {
                 if (level && c.level !== level) return false;
                 return true;
             });
+            return res.status(200).json({
+                success: true,
+                count: courses.length,
+                courses,
+                isDemoData: !isDbOnline,
+                ...(!isDbOnline && { mode: "demo", notice: "Demonstration catalog data. Database is currently in offline mode." }),
+            });
         }
 
         return res.status(200).json({
             success: true,
             count: courses.length,
             courses,
+            isDemoData: false,
         });
     } catch (error) {
         console.error("Error fetching courses:", error.message);

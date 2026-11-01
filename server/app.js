@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { notFound, errorHandler } = require("./middleware/error.middleware");
+const { checkDatabaseState } = require("./middleware/dbState.middleware");
+const { getDatabaseInfo } = require("./config/db");
 
 // Route Handlers
 const authRoutes = require("./routes/auth.routes");
@@ -54,14 +56,27 @@ app.get("/", (req, res) => {
 
 // Health check
 app.get("/api/health", (req, res) => {
-    res.status(200).json({
-        success: true,
+    const dbInfo = getDatabaseInfo();
+    const isHealthy = dbInfo.isConnected;
+
+    res.status(isHealthy || process.env.ALLOW_OFFLINE_DEMO === "true" ? 200 : 503).json({
+        success: isHealthy,
         institute: "Balaji Computer",
         tagline: "Learn Today, Lead Tomorrow.",
-        status: "Online",
+        status: isHealthy ? "Online" : "Degraded",
+        database: {
+            status: dbInfo.state,
+            connected: dbInfo.isConnected,
+            name: dbInfo.dbName,
+            target: dbInfo.maskedUri,
+            mode: dbInfo.isConnected ? "live" : (process.env.ALLOW_OFFLINE_DEMO === "true" ? "offline-demo" : "disconnected"),
+        },
         timestamp: new Date().toISOString(),
     });
 });
+
+// Guard API mutation and database-dependent routes when disconnected
+app.use("/api", checkDatabaseState);
 
 // API Routes
 app.use("/api/auth", authRoutes);

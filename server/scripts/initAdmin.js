@@ -1,12 +1,8 @@
-require("dotenv").config();
-const mongoose = require("mongoose");
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const bcrypt = require("bcrypt");
 const userModel = require("../models/userModel");
-
-const MONGO_URI =
-    process.env.MONGO_URI ||
-    process.env.MONGODB_URI ||
-    "mongodb://127.0.0.1:27017/Balajicomputer";
+const { connectDB, disconnectDB } = require("../config/db");
 
 async function initAdmin() {
     console.log("=== Balaji Computer: Admin Account Initialization ===");
@@ -21,10 +17,7 @@ async function initAdmin() {
     }
 
     try {
-        await mongoose.connect(MONGO_URI, {
-            serverSelectionTimeoutMS: 5000,
-        });
-        console.log("Connected to MongoDB at:", MONGO_URI);
+        await connectDB();
 
         const existingAdmin = await userModel.findOne({ email: adminEmail });
 
@@ -57,7 +50,7 @@ async function initAdmin() {
         console.error("Failed to initialize admin account:", error.message);
         process.exit(1);
     } finally {
-        await mongoose.disconnect();
+        await disconnectDB();
         console.log("Database connection closed.");
         process.exit(0);
     }
