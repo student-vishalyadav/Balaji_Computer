@@ -1,0 +1,32 @@
+# ==============================================================================
+# RENDER BLUEPRINT SPECIFICATION - BALAJI COMPUTER BACKEND
+# ==============================================================================
+services:
+  - type: web
+    name: balaji-computer-backend
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: ALLOW_OFFLINE_DEMO
+        value: "false"
+      - key: MONGO_URI
+        sync: false # Set securely in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_URL
+        sync: false # Set to frontend URL (e.g. https://balaji-computer.vercel.app)
+      - key: ADMIN_NAME
+        value: Admin Balaji
+      - key: ADMIN_EMAIL
+        value: admin@balajicomputer.edu
+      - key: ADMIN_PASSWORD
+        sync: false # Set securely in Render dashboard
+

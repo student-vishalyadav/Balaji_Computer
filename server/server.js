@@ -48,8 +48,8 @@ async function startServer() {
         console.warn("  • Database mutation operations (POST/PUT/DELETE) will return HTTP 503.\n");
     }
 
-    // Step 3: Start Express HTTP Server
-    serverInstance = app.listen(PORT, () => {
+    // Step 3: Start Express HTTP Server (bind to 0.0.0.0 for Render/Container environments)
+    serverInstance = app.listen(PORT, "0.0.0.0", () => {
         const dbInfo = getDatabaseInfo();
         console.log("-------------------------------------------------");
         console.log(` ✓ HTTP Server listening on port: ${PORT}`);

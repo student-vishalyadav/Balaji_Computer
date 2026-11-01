@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Layouts
@@ -11,6 +11,7 @@ import Home from "../pages/Home";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
 import CoursesPage from "../pages/CoursesPage";
+import FacultyList from "../features/faculty/FacultyList";
 
 // Auth Pages
 import Login from "../features/auth/Login";
@@ -22,26 +23,32 @@ import ProtectedRoute from "./ProtectedRoute";
 import DashboardRedirect from "../features/dashboard/DashboardRedirect";
 import Dashboard from "../features/dashboard/Dashboard";
 
-// Admin Management Modules (Phases 1-12)
-import AdminDashboard from "../features/admin/dashboard/AdminDashboard";
-import StudentList from "../features/students/StudentList";
-import AddStudent from "../features/students/AddStudent";
-import StudentDetails from "../features/students/StudentDetails";
-import FacultyList from "../features/faculty/FacultyList";
-import CourseManagement from "../features/admin/courses/CourseManagement";
-import BatchList from "../features/batches/BatchList";
-import Attendance from "../features/attendance/Attendance";
-import FeeManagement from "../features/fees/FeeManagement";
-import ExamList from "../features/examinations/ExamList";
-import StudyMaterials from "../features/study-materials/StudyMaterials";
-import NoticeList from "../features/notices/NoticeList";
-import Reports from "../features/admin/reports/Reports";
-import InstituteSettings from "../features/admin/settings/InstituteSettings";
+// Lazy-Loaded Admin Modules (Code-Splitting for Production Performance)
+const AdminDashboard = lazy(() => import("../features/admin/dashboard/AdminDashboard"));
+const StudentList = lazy(() => import("../features/students/StudentList"));
+const AddStudent = lazy(() => import("../features/students/AddStudent"));
+const StudentDetails = lazy(() => import("../features/students/StudentDetails"));
+const CourseManagement = lazy(() => import("../features/admin/courses/CourseManagement"));
+const BatchList = lazy(() => import("../features/batches/BatchList"));
+const Attendance = lazy(() => import("../features/attendance/Attendance"));
+const FeeManagement = lazy(() => import("../features/fees/FeeManagement"));
+const ExamList = lazy(() => import("../features/examinations/ExamList"));
+const StudyMaterials = lazy(() => import("../features/study-materials/StudyMaterials"));
+const NoticeList = lazy(() => import("../features/notices/NoticeList"));
+const Reports = lazy(() => import("../features/admin/reports/Reports"));
+const InstituteSettings = lazy(() => import("../features/admin/settings/InstituteSettings"));
 
-// 404 Page
+// Loading & UI Fallbacks
+import Loader from "../components/common/Loader";
 import Button from "../components/ui/Button";
 import { Link } from "react-router-dom";
 import { Compass } from "lucide-react";
+
+const SuspenseWrapper = ({ children }) => (
+    <Suspense fallback={<Loader fullPage={false} text="Loading module..." />}>
+        {children}
+    </Suspense>
+);
 
 const NotFound = () => (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-16 text-center">
@@ -128,20 +135,20 @@ export const AppRoutes = () => {
                 }
             >
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
-                <Route path="dashboard" element={<AdminDashboard />} />
-                <Route path="students" element={<StudentList />} />
-                <Route path="students/new" element={<AddStudent />} />
-                <Route path="students/:id" element={<StudentDetails />} />
+                <Route path="dashboard" element={<SuspenseWrapper><AdminDashboard /></SuspenseWrapper>} />
+                <Route path="students" element={<SuspenseWrapper><StudentList /></SuspenseWrapper>} />
+                <Route path="students/new" element={<SuspenseWrapper><AddStudent /></SuspenseWrapper>} />
+                <Route path="students/:id" element={<SuspenseWrapper><StudentDetails /></SuspenseWrapper>} />
                 <Route path="faculty" element={<FacultyList />} />
-                <Route path="courses" element={<CourseManagement />} />
-                <Route path="batches" element={<BatchList />} />
-                <Route path="attendance" element={<Attendance />} />
-                <Route path="fees" element={<FeeManagement />} />
-                <Route path="examinations" element={<ExamList />} />
-                <Route path="materials" element={<StudyMaterials />} />
-                <Route path="notices" element={<NoticeList />} />
-                <Route path="reports" element={<Reports />} />
-                <Route path="settings" element={<InstituteSettings />} />
+                <Route path="courses" element={<SuspenseWrapper><CourseManagement /></SuspenseWrapper>} />
+                <Route path="batches" element={<SuspenseWrapper><BatchList /></SuspenseWrapper>} />
+                <Route path="attendance" element={<SuspenseWrapper><Attendance /></SuspenseWrapper>} />
+                <Route path="fees" element={<SuspenseWrapper><FeeManagement /></SuspenseWrapper>} />
+                <Route path="examinations" element={<SuspenseWrapper><ExamList /></SuspenseWrapper>} />
+                <Route path="materials" element={<SuspenseWrapper><StudyMaterials /></SuspenseWrapper>} />
+                <Route path="notices" element={<SuspenseWrapper><NoticeList /></SuspenseWrapper>} />
+                <Route path="reports" element={<SuspenseWrapper><Reports /></SuspenseWrapper>} />
+                <Route path="settings" element={<SuspenseWrapper><InstituteSettings /></SuspenseWrapper>} />
             </Route>
         </Routes>
     );

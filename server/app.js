@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const { notFound, errorHandler } = require("./middleware/error.middleware");
 const { checkDatabaseState } = require("./middleware/dbState.middleware");
 const { getDatabaseInfo } = require("./config/db");
@@ -21,7 +23,18 @@ const instituteRoutes = require("./routes/institute.routes");
 
 const app = express();
 
-// Allowed origins for CORS
+// Trust reverse proxy (essential for Render / Heroku / Nginx for rate-limiting & IP tracking)
+app.set("trust proxy", 1);
+
+// Security Headers with Helmet
+app.use(
+    helmet({
+        crossOriginResourcePolicy: { policy: "cross-origin" },
+        contentSecurityPolicy: false, // Managed by frontend hosting
+    })
+);
+
+// Dynamic CORS Configuration
 const allowedOrigins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
@@ -29,15 +42,34 @@ const allowedOrigins = [
     "http://localhost:8080",
 ];
 
+if (process.env.CLIENT_URL) {
+    process.env.CLIENT_URL.split(",").forEach((url) => {
+        const trimmed = url.trim();
+        if (trimmed && !allowedOrigins.includes(trimmed)) allowedOrigins.push(trimmed);
+    });
+}
+if (process.env.FRONTEND_URL) {
+    process.env.FRONTEND_URL.split(",").forEach((url) => {
+        const trimmed = url.trim();
+        if (trimmed && !allowedOrigins.includes(trimmed)) allowedOrigins.push(trimmed);
+    });
+}
+
 app.use(
     cors({
         origin: function (origin, callback) {
             // allow requests with no origin (like mobile apps, curl, postman)
             if (!origin) return callback(null, true);
-            if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== "production") {
+            if (
+                allowedOrigins.includes(origin) ||
+                process.env.NODE_ENV !== "production" ||
+                /\.onrender\.com$/.test(origin) ||
+                /\.vercel\.app$/.test(origin) ||
+                /\.netlify\.app$/.test(origin)
+            ) {
                 return callback(null, true);
             }
-            return callback(new Error("Not allowed by CORS"));
+            return callback(new Error(`Origin '${origin}' not allowed by CORS`));
         },
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
@@ -45,8 +77,38 @@ app.use(
     })
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Rate Limiting Protection
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 400, // limit each IP to 400 requests per 15 mins
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        success: false,
+        msg: "Too many requests from this IP. Please try again after 15 minutes.",
+        status: 429,
+    },
+});
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30, // stricter limit for login/registration to prevent brute-force
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        success: false,
+        msg: "Too many authentication attempts. Please try again after 15 minutes.",
+        status: 429,
+    },
+});
+
+app.use("/api", apiLimiter);
+app.use("/api/auth/login", authLimiter);
+app.use("/api/auth/signup", authLimiter);
+
+// Payload size limits to prevent memory exhaustion attacks
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ extended: true, limit: "5mb" }));
 app.use(cookieParser());
 
 // Root test endpoint
