@@ -1,0 +1,145 @@
+# ==============================================================================
+# BALAJI COMPUTER - CENTRALIZED ROOT .gitignore
+# MERN Stack: React.js (Vite + Tailwind CSS) & Node.js (Express + MongoDB)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. DEPENDENCIES & PACKAGE MANAGERS
+# ------------------------------------------------------------------------------
+node_modules/
+client/node_modules/
+server/node_modules/
+*/node_modules/
+jspm_packages/
+web_modules/
+
+# ------------------------------------------------------------------------------
+# 2. ENVIRONMENT VARIABLES & SECRETS
+# Never commit real credentials, MongoDB URIs, JWT secrets, or admin passwords
+# ------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+!.env.*.example
+!.env.production.example
+
+client/.env
+client/.env.*
+!client/.env.example
+
+server/.env
+server/.env.*
+!server/.env.example
+
+# Security Credentials, Keys, and Certificates
+*.pem
+*.key
+*.cert
+*.crt
+id_rsa
+id_rsa.pub
+
+# ------------------------------------------------------------------------------
+# 3. BUILD, COMPILATION & BUNDLER ARTIFACTS
+# ------------------------------------------------------------------------------
+dist/
+build/
+out/
+.next/
+.vite/
+client/dist/
+client/dist-ssr/
+server/dist/
+*.tsbuildinfo
+
+# ------------------------------------------------------------------------------
+# 4. LOGS & PROCESS MANAGERS
+# ------------------------------------------------------------------------------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+pm2.log
+.pids/
+
+# ------------------------------------------------------------------------------
+# 5. RUNTIME, PROCESS & TEMPORARY CACHE
+# ------------------------------------------------------------------------------
+.cache/
+.tmp/
+tmp/
+temp/
+*.pid
+*.seed
+*.pid.lock
+.eslintcache
+.stylelintcache
+
+# ------------------------------------------------------------------------------
+# 6. OPERATING SYSTEM ARTIFACTS
+# ------------------------------------------------------------------------------
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ------------------------------------------------------------------------------
+# 7. IDE, EDITORS & WORKSPACES
+# Preserves shared team workspace recommendations
+# ------------------------------------------------------------------------------
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.sublime-workspace
+*.sublime-project
+
+# ------------------------------------------------------------------------------
+# 8. TESTING, COVERAGE & QA REPORTS
+# ------------------------------------------------------------------------------
+coverage/
+playwright-report/
+test-results/
+.nyc_output/
+
+# ------------------------------------------------------------------------------
+# 9. DATABASE DUMPS, EXPORTS & LOCAL BACKUPS
+# NOTE: Schema models, seed scripts (server/scripts/), and migrations remain tracked
+# ------------------------------------------------------------------------------
+*.dump
+*.bak
+*.backup
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+mongo-dump/
+
+# ------------------------------------------------------------------------------
+# 10. USER UPLOADS & GENERATED MEDIA
+# Excludes student uploaded documents, photos, and materials while keeping directories
+# ------------------------------------------------------------------------------
+server/uploads/*
+!server/uploads/**/.gitkeep
+!server/uploads/documents/.gitkeep
+!server/uploads/profiles/.gitkeep
+!server/uploads/study-materials/.gitkeep
+*.pdf.tmp
+private-uploads/
+

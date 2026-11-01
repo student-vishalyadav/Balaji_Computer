@@ -1,0 +1,21 @@
+{
+  "name": "balaji-computer",
+  "version": "1.0.0",
+  "description": "Balaji Computer - Coaching Institute Website (MERN Stack)",
+  "private": true,
+  "scripts": {
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "build:client": "npm run build --prefix client",
+    "start:server": "npm start --prefix server",
+    "admin:create": "npm run admin:create --prefix server"
+  },
+  "keywords": [
+    "balaji-computer",
+    "education",
+    "coaching-institute",
+    "mern"
+  ],
+  "author": "Balaji Computer",
+  "license": "ISC"
+}
