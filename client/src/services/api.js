@@ -1,5 +1,25 @@
-// API Base URL configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+// API Base URL configuration. Production must reach Render directly because
+// Vercel serves the frontend as static files and does not proxy /api requests.
+const DEFAULT_API_BASE_URL = import.meta.env.PROD
+    ? "https://balaji-computer-2.onrender.com/api"
+    : "/api";
+const configuredApiBaseUrl = import.meta.env.VITE_API_URL?.trim();
+const canUseConfiguredApiBaseUrl = (() => {
+    if (!configuredApiBaseUrl) return false;
+    if (!import.meta.env.PROD) return true;
+
+    try {
+        return new URL(configuredApiBaseUrl).origin === "https://balaji-computer-2.onrender.com";
+    } catch {
+        return false;
+    }
+})();
+const rawApiBaseUrl = (canUseConfiguredApiBaseUrl ? configuredApiBaseUrl : DEFAULT_API_BASE_URL)
+    .replace(/\/+$/, "");
+const normalizedApiBaseUrl = rawApiBaseUrl.replace(/(?:\/api)+$/i, "/api");
+const API_BASE_URL = /\/api$/i.test(normalizedApiBaseUrl)
+    ? normalizedApiBaseUrl
+    : `${normalizedApiBaseUrl}/api`;
 
 class ApiService {
     constructor() {
