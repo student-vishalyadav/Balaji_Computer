@@ -34,25 +34,39 @@ app.use(
     })
 );
 
-// Dynamic CORS Configuration
-const allowedOrigins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:3000",
-    "http://localhost:8080",
-];
+// CORS allows local development origins and explicitly configured frontends.
+const isProduction = process.env.NODE_ENV === "production";
+const allowedOrigins = new Set();
 
-if (process.env.CLIENT_URL) {
-    process.env.CLIENT_URL.split(",").forEach((url) => {
-        const trimmed = url.trim();
-        if (trimmed && !allowedOrigins.includes(trimmed)) allowedOrigins.push(trimmed);
-    });
+if (!isProduction) {
+    [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://localhost:8080",
+    ].forEach((origin) => allowedOrigins.add(origin));
 }
-if (process.env.FRONTEND_URL) {
-    process.env.FRONTEND_URL.split(",").forEach((url) => {
-        const trimmed = url.trim();
-        if (trimmed && !allowedOrigins.includes(trimmed)) allowedOrigins.push(trimmed);
-    });
+
+for (const configuredOrigins of [process.env.CLIENT_URL, process.env.FRONTEND_URL]) {
+    if (!configuredOrigins) continue;
+
+    for (const configuredOrigin of configuredOrigins.split(",")) {
+        const trimmedOrigin = configuredOrigin.trim();
+        if (!trimmedOrigin) continue;
+
+        try {
+            const parsedOrigin = new URL(trimmedOrigin);
+            if (["http:", "https:"].includes(parsedOrigin.protocol)) {
+                allowedOrigins.add(parsedOrigin.origin);
+            }
+        } catch {
+            console.warn("[CORS] Ignoring an invalid CLIENT_URL / FRONTEND_URL entry.");
+        }
+    }
+}
+
+if (isProduction && allowedOrigins.size === 0) {
+    throw new Error("Set CLIENT_URL to the deployed frontend origin in production.");
 }
 
 app.use(
@@ -60,16 +74,10 @@ app.use(
         origin: function (origin, callback) {
             // allow requests with no origin (like mobile apps, curl, postman)
             if (!origin) return callback(null, true);
-            if (
-                allowedOrigins.includes(origin) ||
-                process.env.NODE_ENV !== "production" ||
-                /\.onrender\.com$/.test(origin) ||
-                /\.vercel\.app$/.test(origin) ||
-                /\.netlify\.app$/.test(origin)
-            ) {
+            if (allowedOrigins.has(origin) || !isProduction) {
                 return callback(null, true);
             }
-            return callback(new Error(`Origin '${origin}' not allowed by CORS`));
+            return callback(new Error("Origin not allowed by CORS"));
         },
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],

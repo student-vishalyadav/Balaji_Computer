@@ -2,7 +2,11 @@ const userModel = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const JWT_SECRET = process.env.JWT_SECRET || "haikayatadaphaiyekaisisajajo";
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+    throw new Error("JWT_SECRET environment variable is required");
+}
 
 // Helper to generate JWT token
 const generateToken = (user) => {
