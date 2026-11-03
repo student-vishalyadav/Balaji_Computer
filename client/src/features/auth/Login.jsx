@@ -6,7 +6,6 @@ import Logo from "../../components/common/Logo";
 import Input from "../../components/ui/Input";
 import PasswordInput from "../../components/ui/PasswordInput";
 import Button from "../../components/ui/Button";
-import Modal from "../../components/ui/Modal";
 import toast from "react-hot-toast";
 
 export const Login = () => {
@@ -21,9 +20,6 @@ export const Login = () => {
     });
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [forgotModalOpen, setForgotModalOpen] = useState(false);
-    const [forgotEmail, setForgotEmail] = useState("");
-    const [forgotSubmitted, setForgotSubmitted] = useState(false);
 
     // If already logged in, redirect to role dashboard
     React.useEffect(() => {
@@ -100,15 +96,6 @@ export const Login = () => {
         } finally {
             setIsSubmitting(false);
         }
-    };
-
-    const handleForgotSubmit = (e) => {
-        e.preventDefault();
-        if (!forgotEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(forgotEmail)) {
-            toast.error("Please enter a valid email address");
-            return;
-        }
-        setForgotSubmitted(true);
     };
 
     return (
@@ -245,16 +232,12 @@ export const Login = () => {
                                 <span className="text-slate-600 font-medium">Remember me</span>
                             </label>
 
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setForgotModalOpen(true);
-                                    setForgotSubmitted(false);
-                                }}
-                                className="text-blue-600 hover:text-blue-700 font-semibold cursor-pointer"
+                            <Link
+                                to="/forgot-password"
+                                className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
                             >
                                 Forgot Password?
-                            </button>
+                            </Link>
                         </div>
 
                         {/* Submit Button */}
@@ -293,64 +276,6 @@ export const Login = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Forgot Password Modal */}
-            <Modal
-                isOpen={forgotModalOpen}
-                onClose={() => setForgotModalOpen(false)}
-                title="Reset Password"
-                subtitle="Balaji Computer Account Recovery"
-                size="sm"
-            >
-                {forgotSubmitted ? (
-                    <div className="text-center py-6 space-y-4">
-                        <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto">
-                            <CheckCircle className="w-6 h-6" />
-                        </div>
-                        <h4 className="text-base font-bold text-slate-900">Recovery Instructions Sent</h4>
-                        <p className="text-xs text-slate-500 leading-relaxed">
-                            If an account exists for <span className="font-semibold text-slate-800">{forgotEmail}</span>,
-                            password reset instructions have been forwarded. Please check your inbox or contact the institute office.
-                        </p>
-                        <Button
-                            variant="primary"
-                            size="sm"
-                            className="w-full mt-4"
-                            onClick={() => setForgotModalOpen(false)}
-                        >
-                            Back to Sign In
-                        </Button>
-                    </div>
-                ) : (
-                    <form onSubmit={handleForgotSubmit} className="space-y-4">
-                        <p className="text-xs text-slate-600">
-                            Enter your registered email address and institute administration will verify your enrollment to help recover your login.
-                        </p>
-                        <Input
-                            label="Email Address"
-                            type="email"
-                            placeholder="your.registered.email@example.com"
-                            value={forgotEmail}
-                            onChange={(e) => setForgotEmail(e.target.value)}
-                            icon={Mail}
-                            required
-                        />
-                        <div className="flex gap-2 pt-2">
-                            <Button
-                                variant="outline"
-                                size="md"
-                                className="w-1/2"
-                                onClick={() => setForgotModalOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit" variant="primary" size="md" className="w-1/2">
-                                Send Request
-                            </Button>
-                        </div>
-                    </form>
-                )}
-            </Modal>
         </div>
     );
 };

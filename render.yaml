@@ -27,4 +27,14 @@ services:
         value: admin@balajicomputer.edu
       - key: ADMIN_PASSWORD
         sync: false # Set securely in Render dashboard
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: 465
+      - key: EMAIL_SECURE
+        value: "true"
+      - key: EMAIL_USER
+        sync: false # Set Gmail address in Render dashboard
+      - key: EMAIL_PASS
+        sync: false # Set Google App Password in Render dashboard
 

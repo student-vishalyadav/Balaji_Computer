@@ -115,6 +115,8 @@ export const authAPI = {
     signup: (userData) => api.post("/auth/signup", userData),
     logout: () => api.post("/auth/logout", {}),
     getMe: () => api.get("/auth/me"),
+    forgotPassword: (email) => api.post("/auth/forgot-password", { email }),
+    resetPassword: (token, passwords) => api.post(`/auth/reset-password/${token}`, passwords),
 };
 
 // Admin Dashboard & Settings API

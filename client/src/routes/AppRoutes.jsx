@@ -17,6 +17,7 @@ import FacultyList from "../features/faculty/FacultyList";
 import Login from "../features/auth/Login";
 import Register from "../features/auth/Register";
 import ForgotPassword from "../features/auth/ForgotPassword";
+import ResetPassword from "../features/auth/ResetPassword";
 
 // Protected & Dashboard
 import ProtectedRoute from "./ProtectedRoute";
@@ -89,6 +90,8 @@ export const AppRoutes = () => {
             <Route path="/signup" element={<Register />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Unified Dashboard Smart Redirect */}
             <Route

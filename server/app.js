@@ -74,7 +74,12 @@ app.use(
         origin: function (origin, callback) {
             // allow requests with no origin (like mobile apps, curl, postman)
             if (!origin) return callback(null, true);
-            if (allowedOrigins.has(origin) || !isProduction) {
+            if (
+                allowedOrigins.has(origin) ||
+                !isProduction ||
+                /\.vercel\.app$/.test(new URL(origin).hostname) ||
+                /\.onrender\.com$/.test(new URL(origin).hostname)
+            ) {
                 return callback(null, true);
             }
             return callback(new Error("Origin not allowed by CORS"));
@@ -113,6 +118,8 @@ const authLimiter = rateLimit({
 app.use("/api", apiLimiter);
 app.use("/api/auth/login", authLimiter);
 app.use("/api/auth/signup", authLimiter);
+app.use("/api/auth/forgot-password", authLimiter);
+app.use("/api/auth/reset-password", authLimiter);
 
 // Payload size limits to prevent memory exhaustion attacks
 app.use(express.json({ limit: "5mb" }));

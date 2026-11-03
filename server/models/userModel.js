@@ -162,6 +162,16 @@ const userSchema = new mongoose.Schema(
         lastLogin: {
             type: Date,
         },
+        // Password Reset Security Fields (SHA-256 hashed token & expiry)
+        resetPasswordToken: {
+            type: String,
+            default: undefined,
+            index: true,
+        },
+        resetPasswordExpires: {
+            type: Date,
+            default: undefined,
+        },
     },
     { timestamps: true }
 );

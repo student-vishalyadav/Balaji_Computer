@@ -147,7 +147,7 @@ Balaji_Computer/
 ```env
 PORT=8080
 MONGO_URI=mongodb://127.0.0.1:27017/Balajicomputer
-JWT_SECRET=haikayatadaphaiyekaisisajajo
+JWT_SECRET=replace_with_a_unique_random_secret_at_least_32_characters_long
 NODE_ENV=development
 ```
 
@@ -155,6 +155,11 @@ NODE_ENV=development
 ```env
 VITE_API_URL=/api
 ```
+
+### Production (Vercel + Render):
+- Set Vercel's `VITE_API_URL` to `https://balaji-computer-2.onrender.com/api` and redeploy the frontend.
+- Set Render's `CLIENT_URL` to the exact deployed Vercel origin (scheme and hostname, without a path). Separate multiple allowed origins with commas.
+- Keep `JWT_SECRET` configured in Render. The Render blueprint generates it; never place it in frontend variables.
 
 ---
 
