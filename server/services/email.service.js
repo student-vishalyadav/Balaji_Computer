@@ -1,36 +1,4 @@
-const nodemailer = require("nodemailer");
-
-/**
- * Creates and configures the Nodemailer SMTP transporter.
- * Uses environment variables: EMAIL_HOST, EMAIL_PORT, EMAIL_SECURE, EMAIL_USER, EMAIL_PASS.
- */
-function createTransporter() {
-    const host = process.env.EMAIL_HOST || "smtp.gmail.com";
-    const port = parseInt(process.env.EMAIL_PORT, 10) || 465;
-    const isSecure = process.env.EMAIL_SECURE === "true" || port === 465;
-    const user = process.env.EMAIL_USER;
-    const pass = process.env.EMAIL_PASS;
-
-    if (!user || !pass) {
-        console.warn(
-            "[Email Service Warning] EMAIL_USER or EMAIL_PASS environment variables are not set. Outbound emails will fail until SMTP credentials are provided."
-        );
-    }
-
-    return nodemailer.createTransport({
-        host,
-        port,
-        secure: isSecure,
-        auth: {
-            user,
-            pass,
-        },
-        // Reasonable socket timeouts
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 15000,
-    });
-}
+const { sendEmail, getTransporter, verifySMTP } = require("../config/mailer");
 
 /**
  * Generates an institutional responsive HTML email template for password reset.
@@ -207,7 +175,7 @@ function getPasswordResetTemplate({ name, resetUrl, expireMinutes = 15 }) {
 }
 
 /**
- * Sends a password reset email using Nodemailer.
+ * Sends a password reset email using the configured mailer.
  * 
  * @param {Object} options
  * @param {string} options.to - Recipient email address
@@ -220,22 +188,19 @@ async function sendPasswordResetEmail({ to, name, resetUrl }) {
         throw new Error("Recipient email address and resetUrl are required to send password reset email.");
     }
 
-    const transporter = createTransporter();
-    const fromAddress = process.env.EMAIL_FROM || `"Balaji Computer" <${process.env.EMAIL_USER || "noreply@balajicomputer.edu"}>`;
+    const html = getPasswordResetTemplate({ name, resetUrl, expireMinutes: 15 });
+    const text = `Hello ${name || "Member"},\n\nWe received a request to reset your Balaji Computer account password.\n\nPlease use the following link to reset your password:\n${resetUrl}\n\nThis password reset link is valid for 15 minutes and can only be used once.\n\nIf you did not request this change, please ignore this email and contact the administrator if you suspect unauthorized activity.\n\nRegards,\nBalaji Computer Team\nLearn Today, Lead Tomorrow.`;
 
-    const mailOptions = {
-        from: fromAddress,
+    return sendEmail({
         to,
         subject: "Reset Your Balaji Computer Account Password",
-        html: getPasswordResetTemplate({ name, resetUrl, expireMinutes: 15 }),
-        text: `Hello ${name || "Member"},\n\nWe received a request to reset your Balaji Computer account password.\n\nPlease use the following link to reset your password:\n${resetUrl}\n\nThis password reset link is valid for 15 minutes and can only be used once.\n\nIf you did not request this change, please ignore this email and contact the administrator if you suspect unauthorized activity.\n\nRegards,\nBalaji Computer Team\nLearn Today, Lead Tomorrow.`,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    return info;
+        html,
+        text,
+    });
 }
 
 module.exports = {
-    createTransporter,
+    createTransporter: getTransporter,
     sendPasswordResetEmail,
+    verifySMTP,
 };
