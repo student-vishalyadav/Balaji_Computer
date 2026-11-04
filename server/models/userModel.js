@@ -132,6 +132,17 @@ const userSchema = new mongoose.Schema(
             enum: ["paid", "partial", "pending", "overdue"],
             default: "pending",
         },
+        // Admin-Controlled Course Enrollment Status
+        enrollmentStatus: {
+            type: String,
+            enum: ["NONE", "PENDING", "APPROVED", "REJECTED"],
+            default: "NONE",
+            index: true,
+        },
+        activeAssignmentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "CourseAssignment",
+        },
         // Faculty specific fields
         qualification: {
             type: String,

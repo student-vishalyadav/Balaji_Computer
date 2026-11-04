@@ -26,6 +26,7 @@ import Dashboard from "../features/dashboard/Dashboard";
 
 // Lazy-Loaded Admin Modules (Code-Splitting for Production Performance)
 const AdminDashboard = lazy(() => import("../features/admin/dashboard/AdminDashboard"));
+const EnrollmentManagement = lazy(() => import("../features/admin/enrollments/EnrollmentManagement"));
 const StudentList = lazy(() => import("../features/students/StudentList"));
 const AddStudent = lazy(() => import("../features/students/AddStudent"));
 const StudentDetails = lazy(() => import("../features/students/StudentDetails"));
@@ -139,6 +140,7 @@ export const AppRoutes = () => {
             >
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="dashboard" element={<SuspenseWrapper><AdminDashboard /></SuspenseWrapper>} />
+                <Route path="enrollments" element={<SuspenseWrapper><EnrollmentManagement /></SuspenseWrapper>} />
                 <Route path="students" element={<SuspenseWrapper><StudentList /></SuspenseWrapper>} />
                 <Route path="students/new" element={<SuspenseWrapper><AddStudent /></SuspenseWrapper>} />
                 <Route path="students/:id" element={<SuspenseWrapper><StudentDetails /></SuspenseWrapper>} />

@@ -38,7 +38,7 @@ export const Modal = ({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
             {/* Backdrop */}
             <div
                 className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity animate-in fade-in"
@@ -53,14 +53,14 @@ export const Modal = ({
                 aria-modal="true"
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-                    <div>
-                        {title && <h3 className="text-xl font-bold text-slate-900">{title}</h3>}
-                        {subtitle && <p className="text-sm text-slate-500 mt-0.5">{subtitle}</p>}
+                <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-100 gap-3">
+                    <div className="min-w-0 flex-1">
+                        {title && <h3 className="text-lg sm:text-xl font-bold text-slate-900 break-words">{title}</h3>}
+                        {subtitle && <p className="text-xs sm:text-sm text-slate-500 mt-0.5 break-words">{subtitle}</p>}
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors cursor-pointer"
+                        className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors cursor-pointer shrink-0"
                         aria-label="Close modal"
                     >
                         <X className="w-5 h-5" />
@@ -68,11 +68,11 @@ export const Modal = ({
                 </div>
 
                 {/* Content */}
-                <div className="px-6 py-6 max-h-[75vh] overflow-y-auto">{children}</div>
+                <div className="px-4 sm:px-6 py-4 sm:py-6 max-h-[75vh] overflow-y-auto">{children}</div>
 
                 {/* Footer */}
                 {footer && (
-                    <div className="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100">
+                    <div className="flex items-center justify-end gap-2.5 px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 border-t border-slate-100">
                         {footer}
                     </div>
                 )}

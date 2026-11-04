@@ -7,6 +7,8 @@
     "start": "node server.js",
     "dev": "node server.js",
     "admin:create": "node scripts/initAdmin.js",
+    "migrate": "node scripts/migrations/001_create_enrollment_and_assignment_tables.js",
+    "test:enrollment": "node scripts/testEnrollmentWorkflow.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

@@ -243,3 +243,39 @@ export const instituteAPI = {
     getTestimonials: () => api.get("/testimonials"),
     getFaculty: () => api.get("/faculty"),
 };
+
+// Student Course Enrollment & Admin Approval API
+export const enrollmentAPI = {
+    request: (data) => api.post("/enrollments/request", data),
+    getMyRequests: () => api.get("/enrollments/my-requests"),
+    getStatus: (courseId) => api.get(`/enrollments/status/${courseId}`),
+    getAll: (params = {}) => {
+        const query = new URLSearchParams(params).toString();
+        return api.get(`/admin/enrollments${query ? `?${query}` : ""}`);
+    },
+    getById: (id) => api.get(`/admin/enrollments/${id}`),
+    approve: (id, data) => api.patch(`/admin/enrollments/${id}/approve`, data),
+    reject: (id, data) => api.patch(`/admin/enrollments/${id}/reject`, data),
+    createAssignment: (data) => api.post("/admin/course-assignments/assignments", data),
+    updateAssignment: (id, data) => api.patch(`/admin/course-assignments/assignments/${id}`, data),
+};
+
+// Dynamic Student Dashboard API
+export const studentDashboardAPI = {
+    getDashboard: () => api.get("/student/dashboard"),
+    getAttendance: () => api.get("/student/attendance"),
+    getActiveCourses: () => api.get("/student/active-courses"),
+    getNotifications: () => api.get("/student/notifications"),
+    markNotificationRead: (id) => api.patch(`/student/notifications/${id}/read`),
+    markAllNotificationsRead: () => api.patch("/student/notifications/read-all"),
+};
+
+// Real-Time Notifications API
+export const notificationAPI = {
+    getAdminNotifications: () => api.get("/notifications/admin"),
+    markAdminRead: (id) => api.patch(`/notifications/admin/${id}/read`),
+    markAllAdminRead: () => api.patch("/notifications/admin/read-all"),
+    getStudentNotifications: () => api.get("/notifications/student"),
+    markStudentRead: (id) => api.patch(`/notifications/student/${id}/read`),
+    markAllStudentRead: () => api.patch("/notifications/student/read-all"),
+};

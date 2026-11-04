@@ -22,6 +22,10 @@ const examRoutes = require("./routes/exam.routes");
 const materialRoutes = require("./routes/material.routes");
 const noticeRoutes = require("./routes/notice.routes");
 const instituteRoutes = require("./routes/institute.routes");
+const enrollmentRoutes = require("./routes/enrollment.routes");
+const adminEnrollmentRoutes = require("./routes/adminEnrollment.routes");
+const studentDashboardRoutes = require("./routes/studentDashboard.routes");
+const notificationRoutes = require("./routes/notification.routes");
 
 const app = express();
 
@@ -159,8 +163,14 @@ app.use("/api", checkDatabaseState);
 
 // API Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/admin/enrollments", adminEnrollmentRoutes);
+app.use("/api/admin/course-assignments", adminEnrollmentRoutes);
+app.use("/api/admin/attendance", attendanceRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/student", studentDashboardRoutes);
 app.use("/api/students", studentRoutes);
+app.use("/api/enrollments", enrollmentRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.use("/api/faculty", facultyRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/batches", batchRoutes);

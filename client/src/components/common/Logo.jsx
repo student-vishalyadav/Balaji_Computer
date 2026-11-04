@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 export const Logo = ({
     showTagline = true,
+    responsiveTagline = true,
     size = "md",
     light = false,
     linkTo = "/",
@@ -59,17 +60,17 @@ export const Logo = ({
             </div>
 
             {/* Typography */}
-            <div className="flex flex-col text-left">
-                <div className="flex items-center gap-1.5">
+            <div className="flex flex-col text-left min-w-0">
+                <div className="flex items-center gap-1 sm:gap-1.5 min-w-0">
                     <span
-                        className={`font-extrabold tracking-tight ${cfg.title} ${
+                        className={`font-extrabold tracking-tight text-base sm:${cfg.title} ${
                             light ? "text-white" : "text-slate-900"
                         }`}
                     >
                         BALAJI
                     </span>
                     <span
-                        className={`font-bold tracking-tight ${cfg.title} ${
+                        className={`font-bold tracking-tight text-base sm:${cfg.title} ${
                             light ? "text-blue-300" : "text-blue-600"
                         }`}
                     >
@@ -80,7 +81,7 @@ export const Logo = ({
                     <span
                         className={`font-medium tracking-wide ${cfg.tagline} ${
                             light ? "text-slate-300" : "text-slate-500"
-                        }`}
+                        } ${responsiveTagline ? "hidden sm:inline-block" : "inline-block"}`}
                     >
                         Learn Today, Lead Tomorrow.
                     </span>

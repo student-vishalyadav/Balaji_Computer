@@ -2,7 +2,9 @@ const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 
 if (!process.env.JWT_SECRET) {
-  console.error("[Security Error] JWT_SECRET environment variable is required.");
+  console.error(
+    "[Security Error] JWT_SECRET environment variable is required.",
+  );
   process.exit(1);
 }
 

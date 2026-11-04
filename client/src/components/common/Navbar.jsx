@@ -106,11 +106,11 @@ export const Navbar = () => {
                     : "bg-white/80 backdrop-blur-xs border-b border-slate-200/50"
             }`}
         >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-20">
+            <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16 sm:h-20 min-w-0">
                     {/* Left: Brand Logo & Tagline */}
-                    <div className="flex items-center shrink-0">
-                        <Logo size="md" showTagline={true} />
+                    <div className="flex items-center shrink-0 min-w-0">
+                        <Logo size="md" showTagline={true} responsiveTagline={true} />
                     </div>
 
                     {/* Desktop Navigation Links */}

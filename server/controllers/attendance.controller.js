@@ -178,9 +178,62 @@ const getAttendanceReport = async (req, res) => {
     }
 };
 
+// Update existing attendance record by ID
+const updateAttendanceById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { records } = req.body;
+
+        const attendance = await attendanceModel.findById(id);
+        if (!attendance) {
+            return res.status(404).json({ success: false, msg: "Attendance record not found" });
+        }
+
+        if (Array.isArray(records)) {
+            let presentCount = 0;
+            let absentCount = 0;
+            let lateCount = 0;
+
+            records.forEach((r) => {
+                if (r.status === "present") presentCount++;
+                else if (r.status === "absent") absentCount++;
+                else if (r.status === "late") lateCount++;
+            });
+
+            attendance.records = records;
+            attendance.presentCount = presentCount;
+            attendance.absentCount = absentCount;
+            attendance.lateCount = lateCount;
+            attendance.totalStudents = records.length;
+        }
+
+        attendance.markedBy = req.user?._id;
+        attendance.markedByName = req.user?.fullName || "Admin";
+        await attendance.save();
+
+        await auditLogModel.create({
+            action: "UPDATE_ATTENDANCE",
+            performedBy: req.user?.fullName || "Admin",
+            targetType: "Attendance",
+            targetId: String(attendance._id),
+            details: `Updated attendance record for batch ${attendance.batchName} on ${attendance.date}`,
+            ipAddress: req.ip || "127.0.0.1",
+        });
+
+        return res.status(200).json({
+            success: true,
+            msg: "Attendance record updated successfully.",
+            attendance,
+        });
+    } catch (error) {
+        return res.status(500).json({ success: false, msg: error.message || "Failed to update attendance" });
+    }
+};
+
 module.exports = {
     getBatchAttendance,
     saveAttendance,
     getAttendanceReport,
+    updateAttendanceById,
 };
 

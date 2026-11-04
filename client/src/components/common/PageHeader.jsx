@@ -7,8 +7,10 @@ export const PageHeader = ({ title, subtitle, badge, breadcrumbs = [] }) => {
     return (
         <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/70 via-slate-50 to-slate-50 py-12 md:py-16 border-b border-slate-200/60">
             {/* Background geometric accents */}
-            <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-blue-100/50 blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-amber-100/30 blur-3xl pointer-events-none" />
+            <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+                <div className="absolute top-0 right-0 w-48 sm:w-72 h-48 sm:h-72 rounded-full bg-blue-100/40 blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-48 sm:w-72 h-48 sm:h-72 rounded-full bg-amber-100/30 blur-3xl pointer-events-none" />
+            </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center md:text-left">
                 {/* Breadcrumbs */}

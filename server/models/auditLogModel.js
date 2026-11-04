@@ -15,7 +15,21 @@ const auditLogSchema = new mongoose.Schema(
         targetType: {
             type: String,
             required: true,
-            enum: ["Student", "Faculty", "Course", "Batch", "Fee", "Exam", "Material", "Notice", "Settings", "Auth"],
+            enum: [
+                "Student",
+                "Faculty",
+                "Course",
+                "Batch",
+                "Fee",
+                "Exam",
+                "Material",
+                "Notice",
+                "Settings",
+                "Auth",
+                "EnrollmentRequest",
+                "CourseAssignment",
+                "Attendance",
+            ],
         },
         targetId: {
             type: String,
